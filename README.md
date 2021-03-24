@@ -11,7 +11,7 @@ Fuctions:
 * Adjust Light intensity, fan and vent intensity
 * A virtual LED in the Blynk app can tell you if your light is on or off, this value also gets written to the Spreadsheet so you can easily see when your light timer stops working or even be warned by a push notification
 
-The Goal is to have an ePaper screen near my growboy where i can see basic values and check them from on the go aswell
+The Goal is to have an ePaper screen near my growbox where i can see basic values and check them from on the go aswell
 
 Planned functions:
 * Maintenance Mode: Press a button outside your Growbox (or on your Smartphone) to dim the lights (to safe your eyes) and gain the vent RPM to prevent smell (from organic fertilizers and such)

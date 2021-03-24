@@ -29,20 +29,20 @@ WidgetLED led1(V2);
 
 //Millis variables for timing
 long SerialPreviousMillis = 0;
-long SerialInterval = 5000;                 //Updatetime interval for Serial Monitor
+long SerialInterval = 5000;                 //Time interval for printing values to Serial
 long SheetPreviousMillis = 0;
-long SheetInterval = 900000;                //Updatetime interval for Spreadsheet
+long SheetInterval = 900000;                //Time interval for updating the Spreadsheet
 unsigned long currentSheetMillis;
 unsigned long currentSerialMillis;
 
 
-const char * ssid = "YOUR_WIFI_SSID";
-const char * pass = "YOUR_WIFI_PASSWORD";
-const char auth[] = "YOUR_BLYNK_AUTHCODE";
+const char * ssid = "YOUR_WIFI_SSID";		//YOUR WIFI'S SSID
+const char * pass = "YOUR_WIFI_PASSWORD";	//YOUR WIFI'S PASSWORD
+const char auth[] = "YOUR_BLYNK_AUTHCODE";	//YOUR BLYNK AUTHCODE
 
-String server = "http://maker.ifttt.com";
-String IFTTT_Key = "YOUR_IFTTT_KEY";
-String IFTTTUrl = "YOUR_IFTTT_URL";
+String server = "http://maker.ifttt.com";	//IFTTT Server, probably works for you as it is
+String IFTTT_Key = "YOUR_IFTTT_KEY";		//YOUR IFTTT KEY
+String IFTTTUrl = "YOUR_IFTTT_URL";			//URL of you IFTTT WebHook
 
 
 
@@ -61,7 +61,7 @@ void setup() {
     delay(500);
     Serial.print(".");
   }
-  Serial.println("Nice, Connected !!!");
+  Serial.println("WIFI CONNECTION ESTABLISHED");
 
 
 }
