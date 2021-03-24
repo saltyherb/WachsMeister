@@ -1,7 +1,7 @@
 # WachsMeister
 ESP32 Based Growcontroller for Indoor Growing on soil. DWC Version is planned.
 
-It's intendet to be used with EC controllable Ventilators and Exhaust fans and MeanWell Dimmable LED Drivers. It uses IFTTT to collect some data in a Google-Spreadsheet and it uses Blynk to push data to your smartphone.
+It's intendet to be used with PWM controllable Ventilators and Exhaust fans and MeanWell Dimmable LED Drivers. It uses IFTTT to collect some data in a Google-Spreadsheet and it uses Blynk to push data to your smartphone.
 
 
 Fuctions:
