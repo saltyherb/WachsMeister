@@ -1,48 +1,62 @@
+//Libraries
 #include <WiFi.h>
 #include <WiFiClient.h>
 #include <HTTPClient.h>
 #include <BlynkSimpleEsp32.h>
 #include <DHT.h>
 #include <analogWrite.h>
-
 #define BLYNK_PRINT Serial
 
-#define DHTTYPE DHT11
+//Defines
 #define DHTPIN 4
-#define PWMPIN = 27;
+#define DHTTYPE DHT11
+#define BLYNK_PRINT Serial
+
 
 DHT dht(DHTPIN, DHTTYPE);
 
-float temp;
-float hum;
-float light;
-bool lightstate = false;
-int value1;
-int value2;
-int value3;
-int pwmload_vent = 5;
-char LDRpin = A6;
-String eventName = "pushtosheet";
 
 //Set Blynk Virtual LED
 WidgetLED led1(V2);
 
 //Millis variables for timing
 long SerialPreviousMillis = 0;
-long SerialInterval = 5000;                 //Time interval for printing values to Serial
+long SerialInterval = 5000;                 //Updatetime interval for Serial Monitor
 long SheetPreviousMillis = 0;
-long SheetInterval = 900000;                //Time interval for updating the Spreadsheet
-unsigned long currentSheetMillis;
-unsigned long currentSerialMillis;
+long SheetInterval = 900000;                //Updatetime interval for Spreadsheet
 
+//Events
+String eventName = "tempandhum";
 
-const char * ssid = "YOUR_WIFI_SSID";		//YOUR WIFI'S SSID
-const char * pass = "YOUR_WIFI_PASSWORD";	//YOUR WIFI'S PASSWORD
-const char auth[] = "YOUR_BLYNK_AUTHCODE";	//YOUR BLYNK AUTHCODE
+//Variable for DHT OUT
+float temp;
+float hum;
 
-String server = "http://maker.ifttt.com";	//IFTTT Server, probably works for you as it is
-String IFTTT_Key = "YOUR_IFTTT_KEY";		//YOUR IFTTT KEY
-String IFTTTUrl = "YOUR_IFTTT_URL";			//URL of you IFTTT WebHook
+//FANPercentage
+int pwmload = 5;
+const int PWMPIN = 27;
+
+//WiFi Credentials and BlynkToken
+const char * ssid = "Vodafone-0F87";
+const char * pass = "pX3ixfaRvFg3KTdA";
+const char auth[] = "0eORGPayoFHReYMb2TPx-a-M4Qq3g3o0";
+
+//IFTTT
+String server = "http://maker.ifttt.com";
+String IFTTT_Key = "nNmnqsxYPIjSxq-fWPiaa_zWe3ufmvtmEywIw5wkqmd";
+String IFTTTUrl = "https://maker.ifttt.com/trigger/PotHum/with/key/nNmnqsxYPIjSxq-fWPiaa_zWe3ufmvtmEywIw5wkqmd";
+
+//Variables for amount of Light
+int light;
+
+//Light on or off measured bei LDR
+bool lightstate = false;
+
+//IFTT DATA
+int value1;
+int value2;
+int value3;
+int value4;
 
 
 
@@ -61,18 +75,19 @@ void setup() {
     delay(500);
     Serial.print(".");
   }
-  Serial.println("WIFI CONNECTION ESTABLISHED");
+  Serial.println("Nice, Connected !!!");
 
 
 }
 
 BLYNK_WRITE(V3) 
-{ int pwmload_vent = param.asInt();
-Serial.println(pwmload_vent);
+{ int pwmload = param.asInt();
+Serial.println(pwmload);
 }
 
 
-void pushtosheet(void)
+//Updating Temp and Humidity data to Spreadsheet
+void tempandhum(void)
 {
   String url = server + "/trigger/" + eventName + "/with/key/" + IFTTT_Key + "?value1=" + String((int)value1) + "&value2=" + String((int)value2) + "&value3=" + String((int)value3);
   Serial.println(url);
@@ -98,12 +113,34 @@ void pushtosheet(void)
 }
 
 
-void lightcheck(void)
-{ 
 
-if (currentSheetMillis - SheetPreviousMillis > SheetInterval) {
+void loop() {
+  //Run Blynk
+  Blynk.run();
 
-    pushtosheet();
+
+//Start Millis
+  unsigned long currentSheetMillis = millis();
+  unsigned long currentSerialMillis = millis();
+
+
+  ///Read LDR
+  int light = analogRead(A6);
+
+  ///Read from DHT
+  float hum = dht.readHumidity();
+  float temp = dht.readTemperature();
+
+  ///write values for spreadsheet
+  value1 = temp;
+  value2 = hum;
+  value3 = light;
+  
+
+
+  if (currentSheetMillis - SheetPreviousMillis > SheetInterval) {
+
+    tempandhum();
     SheetPreviousMillis = currentSheetMillis;
   }
 
@@ -116,29 +153,14 @@ if (currentSheetMillis - SheetPreviousMillis > SheetInterval) {
     led1.off();
     lightstate = false;
   }
-}
 
-void readLDR(void)
-{
-  int light = analogRead(LDRpin);
-}
 
-void readDHT(void)
-{
-  float hum = dht.readHumidity();
-  float temp = dht.readTemperature();
 
-}
 
-void writevalues(void)
-{
-  value1 = temp;
-  value2 = hum;
-  value3 = light;
-}
 
-void writeserial(void)
-{
+  //Print data to Serial (Interval)
+  if (currentSerialMillis - SerialPreviousMillis > SerialInterval) {
+
     Serial.print((float)hum);
     Serial.println("%RLF");
     Serial.print((float)temp);
@@ -147,36 +169,12 @@ void writeserial(void)
     Serial.println(" Lightmeasurement");
     Serial.print("Light 1 or 0? : ");
     Serial.println((bool)lightstate);
-}
-
-void loop() {
-
-  unsigned long currentSheetMillis = millis();
-  unsigned long currentSerialMillis = millis();
-  
-  Blynk.run();
-  
-  lightcheck();
-  readDHT();
-
-
-  float hum = dht.readHumidity();
-  float temp = dht.readTemperature();
-
-
-
-  if (currentSheetMillis - SheetPreviousMillis > SheetInterval) {
-
-
-    writevalues();
-    pushtosheet();
-    SheetPreviousMillis = currentSheetMillis;
+    SerialPreviousMillis = currentSerialMillis;
   }
+  Blynk.virtualWrite(V0, temp);
+  Blynk.virtualWrite(V1, hum);
 
-   if (currentSerialMillis - SerialPreviousMillis > SerialInterval) {
-    writevalues();
-    writeserial();
-   }
+
 
 
 }
