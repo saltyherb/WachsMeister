@@ -37,14 +37,14 @@ int pwmload = 5;
 const int PWMPIN = 27;
 
 //WiFi Credentials and BlynkToken
-const char * ssid = "Vodafone-0F87";
-const char * pass = "pX3ixfaRvFg3KTdA";
-const char auth[] = "0eORGPayoFHReYMb2TPx-a-M4Qq3g3o0";
+const char * ssid = "WIFISSID";
+const char * pass = "WIFIPASS";
+const char auth[] = "BLYNKTOKEN";
 
 //IFTTT
 String server = "http://maker.ifttt.com";
-String IFTTT_Key = "nNmnqsxYPIjSxq-fWPiaa_zWe3ufmvtmEywIw5wkqmd";
-String IFTTTUrl = "https://maker.ifttt.com/trigger/PotHum/with/key/nNmnqsxYPIjSxq-fWPiaa_zWe3ufmvtmEywIw5wkqmd";
+String IFTTT_Key = "IFTTT_TOKEN";
+String IFTTTUrl = "https://maker.ifttt.com/YOUR_IFTTT_URL";
 
 //Variables for amount of Light
 int light;
